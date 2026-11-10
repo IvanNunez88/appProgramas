@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "ng serve + Chrome",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "ng: serve",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+                "webpack:/*": "${webRoot}/*",
+                "/./*": "${webRoot}/*",
+                "/src/*": "${webRoot}/src/*",
+                "/*": "*",
+                "/./~/*": "${webRoot}/node_modules/*"
+            }
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach Chrome (ya corriendo en :4200)",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

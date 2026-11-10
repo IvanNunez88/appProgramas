@@ -1,0 +1,102 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Alumnos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Alumnos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-refresher slot="fixed" (ionRefresh)="recargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando) {
+    <div class="ion-text-center ion-padding">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (error) {
+    <div class="ion-text-center ion-padding">
+      <ion-text color="danger">{{ error }}</ion-text>
+    </div>
+  } @else {
+    <ion-list>
+      @for (alumno of alumnos; track alumno.idAlumno) {
+        <ion-item-sliding #sliding>
+          <ion-item>
+            <ion-label>
+              <h2>{{ alumno.nombre }} {{ alumno.aPaterno }} {{ alumno.aMaterno }}</h2>
+              <p>{{ alumno.carrera }} · {{ alumno.fecRegistro | date: 'dd/MM/yyyy' }}</p>
+            </ion-label>
+            <ion-note slot="end">#{{ alumno.idAlumno }}</ion-note>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="primary" (click)="abrirEditar(alumno, sliding)">
+              <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="confirmarEliminar(alumno, sliding)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      } @empty {
+        <ion-item>
+          <ion-label class="ion-text-center">No hay alumnos registrados</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrirCrear()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cerrarModal()">Cancelar</ion-button>
+          </ion-buttons>
+          <ion-title>{{ idEditando === null ? 'Nuevo alumno' : 'Editar alumno' }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button strong="true" (click)="guardar()">Guardar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <ion-list>
+          <ion-item>
+            <ion-input label="Nombre" labelPlacement="stacked" [(ngModel)]="form.nombre"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Apellido paterno" labelPlacement="stacked" [(ngModel)]="form.aPaterno"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Apellido materno" labelPlacement="stacked" [(ngModel)]="form.aMaterno"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-select
+              label="Carrera"
+              labelPlacement="stacked"
+              placeholder="Selecciona una carrera"
+              interface="popover"
+              [(ngModel)]="form.idCarrera"
+            >
+              @for (carrera of carreras; track carrera.idCarrera) {
+                <ion-select-option [value]="carrera.idCarrera">{{ carrera.descripcion }}</ion-select-option>
+              }
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

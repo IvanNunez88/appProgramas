@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Carreras</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Carreras</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-refresher slot="fixed" (ionRefresh)="recargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando) {
+    <div class="ion-text-center ion-padding">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (error) {
+    <div class="ion-text-center ion-padding">
+      <ion-text color="danger">{{ error }}</ion-text>
+    </div>
+  } @else {
+    <ion-list>
+      @for (carrera of carreras; track carrera.idCarrera) {
+        <ion-item-sliding #sliding>
+          <ion-item>
+            <ion-label>{{ carrera.descripcion }}</ion-label>
+            <ion-note slot="end">#{{ carrera.idCarrera }}</ion-note>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="primary" (click)="abrirEditar(carrera, sliding)">
+              <ion-icon slot="icon-only" name="create"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="confirmarEliminar(carrera, sliding)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      } @empty {
+        <ion-item>
+          <ion-label class="ion-text-center">No hay carreras registradas</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrirCrear()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
